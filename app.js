@@ -4,12 +4,18 @@ const cors = require("cors");
 const app = express();
 
 const contactsRouter = require("./app/routes/contact.route");
+const authRouter = require("./app/routes/auth.route");
+const messagesRouter = require("./app/routes/message.route");
+const { verifyToken } = require("./app/middlewares/authJwt");
 
 const ApiError = require("./app/api-error");
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/contacts", contactsRouter);
+
+app.use("/api/auth", authRouter);
+app.use("/api/contacts", verifyToken, contactsRouter);
+app.use("/api/messages", verifyToken, messagesRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to contact book application" });
